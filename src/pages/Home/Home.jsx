@@ -4,6 +4,10 @@ import { myContext } from "../../app/context";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 
+//React Bootstrap
+import { Container, Row, Col } from "react-bootstrap";
+import { CCard } from "../../common/CCard/CCard";
+
 function Home() {
   const [movies, setMovies] = useState([]);
   const { state, SetAuth } = useContext(myContext);
@@ -42,7 +46,6 @@ function Home() {
       }, 275);
 
       return () => clearTimeout(bring);
-
     } else if (state.global.search === "") {
       getMovies();
     }
@@ -57,15 +60,19 @@ function Home() {
     <div className="home-design">
       {movies.length > 0 ? (
         //I have got the movies
-        <div>
-          {movies.map((movie) => {
-            return (
-              <div onClick={() => selectMovie(movie)} key={movie.id}>
-                {movie.title}
-              </div>
-            );
-          })}
-        </div>
+        <Container>
+          <Row>
+            {movies.map((movie) => {
+              return (
+                <Col sm={12} md={6} lg={4} xl={3} key={movie.id}>
+                  <div onClick={() => selectMovie(movie)}>
+                    <CCard movie={movie} />
+                  </div>
+                </Col>
+              );
+            })}
+          </Row>
+        </Container>
       ) : (
         <div>LOADING.......</div>
       )}
@@ -74,17 +81,3 @@ function Home() {
 }
 
 export default Home;
-
-// const bring = setTimeout(()=>{
-
-//   searchFilms(criteria)
-//   .then(res => {
-
-//       //Guardo en RDX
-//       dispatch(addSearch({movies : res.data.results}))
-//   })
-//   .catch(error => console.log(error));
-
-// },350);
-
-// return () => clearTimeout(bring);
