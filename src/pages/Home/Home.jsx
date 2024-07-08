@@ -6,49 +6,52 @@ import "./Home.css";
 
 function Home() {
   const [movies, setMovies] = useState([]);
-  const {state, SetAuth} = useContext(myContext)
-  const navigate = useNavigate()
+  const { state, SetAuth } = useContext(myContext);
+  const navigate = useNavigate();
+
+  const getMovies = async () => {
+    bringMovies()
+      .then((res) => {
+        setMovies(res.results);
+      })
+      .catch((error) => console.log(error));
+  };
 
   useEffect(() => {
     if (movies.length === 0) {
-      const getMovies = async () => {
-        bringMovies()
-          .then((res) => {
-            setMovies(res.results);
-          })
-          .catch((error) => console.log(error));
-      };
-        getMovies();
+      getMovies();
     }
 
     console.log(movies);
   }, [movies]);
 
-  useEffect(()=>{
+  useEffect(() => {
     //The trick here consists in the fact that we are following the state with the useEffect,
     //so every time we change the state we alter the movies data hook, not the state hook.
 
-    if(state !== ""){
-
+    if (state.global.search !== "") {
       const bringSearchedMovies = async () => {
-
         searchMovieCriteria(state.global.search)
-          .then(res => {
-            setMovies(res.results)
+          .then((res) => {
+            setMovies(res.results);
           })
-          .catch(error => console.log(error))
+          .catch((error) => console.log(error));
+      };
+      const bring = setTimeout(() => {
+        bringSearchedMovies();
+      }, 275);
 
-      }
+      return () => clearTimeout(bring);
 
-      bringSearchedMovies()
+    } else if (state.global.search === "") {
+      getMovies();
     }
-
-  }, [state])
+  }, [state]);
 
   const selectMovie = (movie) => {
-    SetAuth("movie", movie)
-    navigate("/moviedetail")
-  }
+    SetAuth("movie", movie);
+    navigate("/moviedetail");
+  };
 
   return (
     <div className="home-design">
@@ -56,7 +59,11 @@ function Home() {
         //I have got the movies
         <div>
           {movies.map((movie) => {
-            return <div onClick={()=>selectMovie(movie)} key={movie.id}>{movie.title}</div>;
+            return (
+              <div onClick={() => selectMovie(movie)} key={movie.id}>
+                {movie.title}
+              </div>
+            );
           })}
         </div>
       ) : (
@@ -67,3 +74,17 @@ function Home() {
 }
 
 export default Home;
+
+// const bring = setTimeout(()=>{
+
+//   searchFilms(criteria)
+//   .then(res => {
+
+//       //Guardo en RDX
+//       dispatch(addSearch({movies : res.data.results}))
+//   })
+//   .catch(error => console.log(error));
+
+// },350);
+
+// return () => clearTimeout(bring);

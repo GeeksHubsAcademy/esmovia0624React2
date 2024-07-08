@@ -35,6 +35,7 @@ function Header() {
   useEffect(()=> {
 
     SetAuth("search", search)
+    console.log(search)
   }, [search])
   return (
     <div className="header-design">
